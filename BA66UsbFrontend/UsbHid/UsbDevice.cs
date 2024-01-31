@@ -14,7 +14,7 @@ namespace BA66UsbFrontend.UsbHid
 		public abstract ushort? UsagePage { get; }
 		public abstract ushort? UsageId { get; }
 
-		public bool IsInitialized => device?.IsInitialized ?? false;
+		public bool IsInitialized { get; private set; } = false;
 
 		public string ProductName { get; private set; } = "<unknown>";
 		public int WriteBufferSize { get; private set; } = 0;
@@ -39,6 +39,7 @@ namespace BA66UsbFrontend.UsbHid
 					device = await deviceFactory.GetDeviceAsync(deviceDefinition).ConfigureAwait(false);
 					await device.InitializeAsync().ConfigureAwait(false);
 
+					IsInitialized = device.IsInitialized;
 					ProductName = deviceDefinition.ProductName;
 					WriteBufferSize = deviceDefinition.WriteBufferSize.GetValueOrDefault();
 					ReadBufferSize = deviceDefinition.ReadBufferSize.GetValueOrDefault();
@@ -62,22 +63,37 @@ namespace BA66UsbFrontend.UsbHid
 
 		protected async Task<byte[]> SendAndReceiveBuffer(params byte[] data)
 		{
-			if (device == null) throw new NullReferenceException("Device is null, initialization has failed");
+			try
+			{
+				if (device == null) throw new NullReferenceException("Device is null, initialization has failed");
 
-			var writeBuffer = new byte[device.ConnectedDeviceDefinition.WriteBufferSize.GetValueOrDefault()];
-			Buffer.BlockCopy(data, 0, writeBuffer, 1, Math.Min(data.Length, writeBuffer.Length - 1));
+				var writeBuffer = new byte[device.ConnectedDeviceDefinition.WriteBufferSize.GetValueOrDefault()];
+				Buffer.BlockCopy(data, 0, writeBuffer, 1, Math.Min(data.Length, writeBuffer.Length - 1));
 
-			return await device.WriteAndReadAsync(writeBuffer).ConfigureAwait(false);
+				return await device.WriteAndReadAsync(writeBuffer).ConfigureAwait(false);
+			}
+			catch (IOException)
+			{
+				IsInitialized = false;
+				return new byte[4];
+			}
 		}
 
 		protected async Task SendBuffer(params byte[] data)
 		{
-			if (device == null) throw new NullReferenceException("Device is null, initialization has failed");
+			try
+			{
+				if (device == null) throw new NullReferenceException("Device is null, initialization has failed");
 
-			var writeBuffer = new byte[device.ConnectedDeviceDefinition.WriteBufferSize.GetValueOrDefault()];
-			Buffer.BlockCopy(data, 0, writeBuffer, 1, Math.Min(data.Length, writeBuffer.Length - 1));
+				var writeBuffer = new byte[device.ConnectedDeviceDefinition.WriteBufferSize.GetValueOrDefault()];
+				Buffer.BlockCopy(data, 0, writeBuffer, 1, Math.Min(data.Length, writeBuffer.Length - 1));
 
-			await device.WriteAsync(writeBuffer).ConfigureAwait(false);
+				await device.WriteAsync(writeBuffer).ConfigureAwait(false);
+			}
+			catch (IOException)
+			{
+				IsInitialized = false;
+			}
 		}
 	}
 }

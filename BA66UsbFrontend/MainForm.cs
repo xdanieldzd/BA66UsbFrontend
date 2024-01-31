@@ -28,8 +28,9 @@ namespace BA66UsbFrontend
 
 		readonly Queue<ContentBase> contents = [];
 
+		bool simulationOnlyMode = true;
 		UsbDisplay usbDisplay = default;
-		Encoding textEncoding = Encoding.ASCII;
+		Encoding textEncoding = Encoding.GetEncoding(437);
 
 		public MainForm()
 		{
@@ -65,7 +66,8 @@ namespace BA66UsbFrontend
 			CreateDataBinding(chkShowStartupMessage.DataBindings, nameof(chkShowStartupMessage.Checked), Program.Configuration, nameof(Program.Configuration.ShowStartupMessage));
 
 			usbDisplay = await InitializeUsbDisplay();
-			tsslStatus.Text = $"Connected to USB Display (VID: 0x{usbDisplay?.VendorId:X4}, PID: 0x{usbDisplay?.ProductId:X4})";
+			if (usbDisplay.IsInitialized)
+				tsslStatus.Text = $"Connected to USB Display (VID: 0x{usbDisplay?.VendorId:X4}, PID: 0x{usbDisplay?.ProductId:X4})";
 
 			ctrlDisplayControl.SetCountryCode(0x34);
 
@@ -136,6 +138,13 @@ namespace BA66UsbFrontend
 
 			while (await contentTimer.WaitForNextTickAsync())
 			{
+				if (!usbDisplay.IsInitialized && !simulationOnlyMode)
+				{
+					MessageBox.Show("Connection to USB display lost." + Environment.NewLine + Environment.NewLine + "Please restart application to reconnect.",
+						"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					simulationOnlyMode = true;
+				}
+
 				foreach (var content in contents.Where(x => x.IsEnabled))
 					content.Update(textEncoding, new(displayColumnsPerLine, displayNumberOfLines));
 
@@ -144,7 +153,8 @@ namespace BA66UsbFrontend
 
 				if (contents.TryPeek(out ContentBase activeContent))
 				{
-					await activeContent.SendToDevice(usbDisplay);
+					if (!simulationOnlyMode)
+						await activeContent.SendToDevice(usbDisplay);
 					await activeContent.SendToDevice(ctrlDisplayControl);
 
 					if (stopwatch.Elapsed >= activeContent.DisplayDuration)
@@ -177,9 +187,11 @@ namespace BA66UsbFrontend
 				if (usbDisplay.IsInitialized)
 				{
 					await usbDisplay.SetCountryCode(0x34);
-					textEncoding = Encoding.GetEncoding(usbDisplay.CodePage);
+					textEncoding = Encoding.GetEncoding(usbDisplay.CodePage & 0xFFFF);
 
 					await usbDisplay.ClearScreen();
+
+					simulationOnlyMode = false;
 				}
 			}
 			catch (UsbDeviceNotFoundException ex)
@@ -190,7 +202,10 @@ namespace BA66UsbFrontend
 				else if (ex.ErrorType == UsbDeviceNotFoundExceptionType.DeviceFoundButWrongUsage)
 					errorMessage = $"USB device was found, but does not support Usage Page 0x{ex.UsagePage:X4} and/or Usage ID 0x{ex.Usage:X4}!";
 
-				MessageBox.Show(errorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show(errorMessage + Environment.NewLine + Environment.NewLine + "Running in simulation-only mode.",
+					"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+				simulationOnlyMode = true;
 			}
 
 			return usbDisplay;
