@@ -11,3 +11,6 @@ Code uses [Device.Net](https://github.com/MelbourneDeveloper/Device.Net) and fri
 ## Notes
 - My BA66 came with a **USB Type-B to PoweredUSB** cable attached, but [PoweredUSB](https://en.wikipedia.org/wiki/PoweredUSB) is not required to drive the display and, as the label implies (+5V, 450 mA), it works fine with a normal Type-B to Type-A cable.
 - Adapting the project for use with the **BA63 USB** (2x20 characters, USB PID 0x0200) is possible, but all data sent to the display is formatted for four lines, so all screen layouts will need reworking, etc.
+
+## Screenshots
+![Screenshot 1](Screenshots/Screenshot1.png)
