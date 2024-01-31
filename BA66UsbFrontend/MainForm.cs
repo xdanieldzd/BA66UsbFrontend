@@ -79,6 +79,8 @@ namespace BA66UsbFrontend
 
 		private void MainForm_Resize(object sender, EventArgs e)
 		{
+			if (!Visible) return;
+
 			var minimized = WindowState == FormWindowState.Minimized;
 			ShowInTaskbar = !minimized;
 			if (minimized) Hide();
@@ -86,6 +88,8 @@ namespace BA66UsbFrontend
 
 		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
+			Program.Configuration.StartMinimized = WindowState == FormWindowState.Minimized;
+
 			Configuration.Save(Program.ConfigPath, Program.Configuration);
 
 			notifyIcon.Visible = false;

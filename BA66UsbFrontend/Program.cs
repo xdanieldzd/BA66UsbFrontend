@@ -29,7 +29,7 @@ namespace BA66UsbFrontend
 
 			Configuration = Configuration.Load(ConfigPath);
 
-			Application.Run(new MainForm());
+			Application.Run(new MainForm() { WindowState = Configuration.StartMinimized ? FormWindowState.Minimized : FormWindowState.Normal });
 		}
 	}
 }

@@ -5,6 +5,7 @@ namespace BA66UsbFrontend
 {
 	public class Configuration
 	{
+		public bool StartMinimized { get; set; } = false;
 		public bool ShowStartupMessage { get; set; } = false;
 
 		public bool ShowBigClockDate { get; set; } = true;
