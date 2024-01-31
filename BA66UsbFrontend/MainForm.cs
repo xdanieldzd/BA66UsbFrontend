@@ -13,6 +13,8 @@ namespace BA66UsbFrontend
 {
 	public partial class MainForm : Form
 	{
+		// TODO: better codepage/charset selection and handling
+
 		static readonly double displayTargetFps = 10.0;
 		static readonly int displayNumberOfLines = 4;
 		static readonly int displayColumnsPerLine = 20;
@@ -30,7 +32,7 @@ namespace BA66UsbFrontend
 
 		bool simulationOnlyMode = true;
 		UsbDisplay usbDisplay = default;
-		Encoding textEncoding = Encoding.GetEncoding(437);
+		Encoding textEncoding = Encoding.GetEncoding(858);
 
 		public MainForm()
 		{
