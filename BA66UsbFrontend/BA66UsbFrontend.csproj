@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>disable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Description>Control Application for Windor Nixdorf BA66 USB point-of-sale displays</Description>
+    <Copyright>Written in 2024 by xdaniel</Copyright>
+    <Version>0.1.0</Version>
+    <ApplicationIcon>Assets\Icon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\Font-00.png" />
+    <None Remove="Assets\Font-34.png" />
+    <None Remove="Assets\Icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Font-00.png" />
+    <EmbeddedResource Include="Assets\Font-34.png" />
+    <EmbeddedResource Include="Assets\Icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Device.Net" Version="4.3.0-beta" />
+    <PackageReference Include="Hid.Net" Version="4.3.0-beta" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="8.0.0" />
+    <PackageReference Include="Usb.Net" Version="4.3.0-beta" />
+  </ItemGroup>
+
+</Project>
