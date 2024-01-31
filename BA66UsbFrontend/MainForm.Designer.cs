@@ -745,11 +745,13 @@
 			Controls.Add(stpMain);
 			DoubleBuffered = true;
 			Icon = (Icon)resources.GetObject("$this.Icon");
+			MaximizeBox = false;
 			MinimumSize = new Size(816, 539);
 			Name = "MainForm";
 			StartPosition = FormStartPosition.CenterScreen;
 			FormClosing += MainForm_FormClosing;
 			Load += MainForm_Load;
+			Resize += MainForm_Resize;
 			stpMain.ResumeLayout(false);
 			stpMain.PerformLayout();
 			tcTabs.ResumeLayout(false);

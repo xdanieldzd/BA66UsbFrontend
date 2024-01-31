@@ -20,9 +20,10 @@ namespace BA66UsbFrontend
 		readonly PeriodicTimer contentTimer = new(TimeSpan.FromMilliseconds(1000.0 / displayTargetFps));
 		readonly NotifyIcon notifyIcon = new()
 		{
-			Visible = false,
-			Text = $"{Program.ProgramName} (double-click to restore)",
-			Icon = Resources.GetEmbeddedIcon("Assets.Icon.ico", new(16, 16))
+			Visible = true,
+			Text = $"{Program.ProgramName} v{Program.ProgramVersionString}",
+			Icon = Resources.GetEmbeddedIcon("Assets.Icon.ico", new(16, 16)),
+			ContextMenuStrip = new()
 		};
 
 		readonly Queue<ContentBase> contents = [];
@@ -34,22 +35,17 @@ namespace BA66UsbFrontend
 		{
 			InitializeComponent();
 
-			Resize += (s, e) =>
+			notifyIcon.ContextMenuStrip.Items.AddRange(new ToolStripItem[]
 			{
-				if (WindowState == FormWindowState.Minimized)
+				new ToolStripMenuItem("&Restore", null, (s, e) =>
 				{
-					Hide();
-					notifyIcon.Visible = true;
-				}
-			};
-
-			notifyIcon.MouseDoubleClick += (s, e) =>
-			{
-				Show();
-				WindowState = FormWindowState.Normal;
-				notifyIcon.Visible = false;
-				Invalidate();
-			};
+					Show();
+					WindowState = FormWindowState.Normal;
+					Invalidate();
+				}),
+				new ToolStripSeparator(),
+				new ToolStripMenuItem("E&xit", null, (s, e) => { Close(); })
+			});
 
 			cmbWeatherUnits.DataSource = Enum.GetValues(typeof(WeatherUnits));
 
@@ -79,6 +75,13 @@ namespace BA66UsbFrontend
 				await SendStartupMessage();
 
 			InitializeMainUpdateLoop();
+		}
+
+		private void MainForm_Resize(object sender, EventArgs e)
+		{
+			var minimized = WindowState == FormWindowState.Minimized;
+			ShowInTaskbar = !minimized;
+			if (minimized) Hide();
 		}
 
 		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
