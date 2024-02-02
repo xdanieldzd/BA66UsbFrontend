@@ -744,6 +744,7 @@
 			Controls.Add(ctrlDisplayControl);
 			Controls.Add(stpMain);
 			DoubleBuffered = true;
+			FormBorderStyle = FormBorderStyle.FixedDialog;
 			Icon = (Icon)resources.GetObject("$this.Icon");
 			MaximizeBox = false;
 			MinimumSize = new Size(816, 539);

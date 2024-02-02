@@ -28,11 +28,11 @@ namespace BA66UsbFrontend
 			ContextMenuStrip = new()
 		};
 
+		readonly Encoding textEncoding = Encoding.GetEncoding(858);
 		readonly Queue<ContentBase> contents = [];
 
 		bool simulationOnlyMode = true;
 		UsbDisplay usbDisplay = default;
-		Encoding textEncoding = Encoding.GetEncoding(858);
 
 		public MainForm()
 		{
@@ -45,6 +45,7 @@ namespace BA66UsbFrontend
 					Show();
 					WindowState = FormWindowState.Normal;
 					Invalidate();
+					BringToFront();
 				}),
 				new ToolStripSeparator(),
 				new ToolStripMenuItem("E&xit", null, (s, e) => { Close(); })
@@ -79,6 +80,8 @@ namespace BA66UsbFrontend
 				await SendStartupMessage();
 
 			InitializeMainUpdateLoop();
+
+			SetVisibleCore(!Program.Configuration.StartMinimized);
 		}
 
 		private void MainForm_Resize(object sender, EventArgs e)
@@ -156,7 +159,10 @@ namespace BA66UsbFrontend
 				if (contents.TryPeek(out ContentBase activeContent))
 				{
 					if (!simulationOnlyMode)
+					{
+						await usbDisplay.SetCountryCode(0x34);
 						await activeContent.SendToDevice(usbDisplay);
+					}
 					await activeContent.SendToDevice(ctrlDisplayControl);
 
 					if (stopwatch.Elapsed >= activeContent.DisplayDuration)
@@ -185,14 +191,9 @@ namespace BA66UsbFrontend
 				usbDisplay = new UsbDisplay();
 
 				await usbDisplay.Initialize();
-
 				if (usbDisplay.IsInitialized)
 				{
-					await usbDisplay.SetCountryCode(0x34);
-					textEncoding = Encoding.GetEncoding(usbDisplay.CodePage & 0xFFFF);
-
 					await usbDisplay.ClearScreen();
-
 					simulationOnlyMode = false;
 				}
 			}
