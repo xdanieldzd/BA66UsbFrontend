@@ -1,4 +1,5 @@
-﻿using BA66UsbFrontend.Content.Weather;
+﻿using BA66UsbFrontend.Content.Clock;
+using BA66UsbFrontend.Content.Weather;
 using Newtonsoft.Json;
 
 namespace BA66UsbFrontend
@@ -23,6 +24,8 @@ namespace BA66UsbFrontend
 		public double SystemStatusDuration { get; set; } = 5.0;
 		public double NetworkStatusDuration { get; set; } = 5.0;
 		public double MediaDuration { get; set; } = 5.0;
+
+		public BigClockSize BigClockSize { get; set; } = BigClockSize.ThreeByThree;
 
 		public string WeatherApiKey { get; set; } = string.Empty;
 		public string WeatherPostcode { get; set; } = string.Empty;

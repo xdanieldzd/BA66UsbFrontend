@@ -51,7 +51,18 @@ namespace BA66UsbFrontend
 				new ToolStripMenuItem("E&xit", null, (s, e) => { Close(); })
 			});
 
+			cmbClockFontSize.DataSource = Enum.GetValues(typeof(BigClockSize));
+			cmbClockFontSize.SelectionChangeCommitted += (s, e) => { if (s is ComboBox comboBox) { comboBox.DataBindings[nameof(comboBox.SelectedItem)].WriteValue(); } };
 			cmbWeatherUnits.DataSource = Enum.GetValues(typeof(WeatherUnits));
+			cmbWeatherUnits.SelectionChangeCommitted += (s, e) =>
+			{
+				if (s is ComboBox comboBox)
+				{
+					comboBox.DataBindings[nameof(comboBox.SelectedItem)].WriteValue();
+					(contents.FirstOrDefault(x => x is WeatherMainContent) as WeatherMainContent).ForceUpdate = true;
+					(contents.FirstOrDefault(x => x is WeatherSubContent) as WeatherSubContent).ForceUpdate = true;
+				}
+			};
 
 			Text = lblApplicationName.Text = $"{Program.ProgramName} v{Program.ProgramVersionString}";
 			lblApplicationDescription.Text = Program.ProgramDescription;
@@ -128,6 +139,7 @@ namespace BA66UsbFrontend
 			CreateDataBinding(nudNetworkDisplayDuration.DataBindings, nameof(nudNetworkDisplayDuration.Value), Program.Configuration, nameof(Program.Configuration.NetworkStatusDuration));
 			CreateDataBinding(nudMediaDisplayDuration.DataBindings, nameof(nudMediaDisplayDuration.Value), Program.Configuration, nameof(Program.Configuration.MediaDuration));
 
+			CreateDataBinding(cmbClockFontSize.DataBindings, nameof(cmbClockFontSize.SelectedItem), Program.Configuration, nameof(Program.Configuration.BigClockSize));
 			CreateDataBinding(txtWeatherApiKey.DataBindings, nameof(txtWeatherApiKey.Text), Program.Configuration, nameof(Program.Configuration.WeatherApiKey));
 			CreateDataBinding(txtWeatherPostcode.DataBindings, nameof(txtWeatherPostcode.Text), Program.Configuration, nameof(Program.Configuration.WeatherPostcode));
 			CreateDataBinding(txtWeatherCountry.DataBindings, nameof(txtWeatherCountry.Text), Program.Configuration, nameof(Program.Configuration.WeatherCountry));

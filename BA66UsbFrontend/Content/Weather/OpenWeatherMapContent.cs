@@ -31,8 +31,9 @@ namespace BA66UsbFrontend.Content.Weather
 		static readonly HttpClientHandler clientHandler = new();
 		static readonly HttpClient client = new(clientHandler) { Timeout = TimeSpan.FromSeconds(3.0) };
 
+		public bool ForceUpdate { get; set; } = true;
+
 		readonly Stopwatch updateStopwatch = Stopwatch.StartNew();
-		bool firstRun = true;
 		Report lastReport = new();
 
 		protected static async Task<Location> GetLocation()
@@ -59,10 +60,10 @@ namespace BA66UsbFrontend.Content.Weather
 			{
 				if (!weatherUnitsDict.TryGetValue(Program.Configuration.WeatherUnits, out string unit)) throw new Exception($"Unsupported or invalid weather unit '{Program.Configuration.WeatherUnits}' selected");
 
-				if (updateStopwatch.Elapsed >= updateDelay || firstRun)
+				if (updateStopwatch.Elapsed >= updateDelay || ForceUpdate)
 				{
 					updateStopwatch.Restart();
-					firstRun = false;
+					ForceUpdate = false;
 
 					var location = await GetLocation();
 
@@ -74,7 +75,7 @@ namespace BA66UsbFrontend.Content.Weather
 			}
 			catch
 			{
-				firstRun = false;
+				ForceUpdate = false;
 			}
 
 			return lastReport;

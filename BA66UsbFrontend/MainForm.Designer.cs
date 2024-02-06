@@ -82,6 +82,8 @@
 			lblApplicationWrittenBy = new Label();
 			lblApplicationName = new Label();
 			lklApplicationUrl = new LinkLabel();
+			lblClockFontSize = new Label();
+			cmbClockFontSize = new ComboBox();
 			stpMain.SuspendLayout();
 			tcTabs.SuspendLayout();
 			tpGeneral.SuspendLayout();
@@ -196,6 +198,8 @@
 			tlpBigClock.ColumnCount = 2;
 			tlpBigClock.ColumnStyles.Add(new ColumnStyle());
 			tlpBigClock.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+			tlpBigClock.Controls.Add(lblClockFontSize, 0, 5);
+			tlpBigClock.Controls.Add(cmbClockFontSize, 1, 5);
 			tlpBigClock.Controls.Add(chkClockShowDate, 0, 0);
 			tlpBigClock.Controls.Add(chkClockShowTime, 0, 3);
 			tlpBigClock.Controls.Add(nudClockDateDuration, 1, 2);
@@ -204,7 +208,8 @@
 			tlpBigClock.Controls.Add(lblClockTimeDuration, 0, 4);
 			tlpBigClock.Location = new Point(6, 6);
 			tlpBigClock.Name = "tlpBigClock";
-			tlpBigClock.RowCount = 6;
+			tlpBigClock.RowCount = 7;
+			tlpBigClock.RowStyles.Add(new RowStyle());
 			tlpBigClock.RowStyles.Add(new RowStyle());
 			tlpBigClock.RowStyles.Add(new RowStyle());
 			tlpBigClock.RowStyles.Add(new RowStyle());
@@ -735,6 +740,27 @@
 			lklApplicationUrl.TextAlign = ContentAlignment.MiddleCenter;
 			lklApplicationUrl.LinkClicked += LklApplicationUrl_LinkClicked;
 			// 
+			// lblClockFontSize
+			// 
+			lblClockFontSize.AutoSize = true;
+			lblClockFontSize.Dock = DockStyle.Fill;
+			lblClockFontSize.Location = new Point(3, 108);
+			lblClockFontSize.Name = "lblClockFontSize";
+			lblClockFontSize.Size = new Size(181, 29);
+			lblClockFontSize.TabIndex = 15;
+			lblClockFontSize.Text = "Font Size/Style:";
+			lblClockFontSize.TextAlign = ContentAlignment.MiddleLeft;
+			// 
+			// cmbClockFontSize
+			// 
+			cmbClockFontSize.Dock = DockStyle.Fill;
+			cmbClockFontSize.DropDownStyle = ComboBoxStyle.DropDownList;
+			cmbClockFontSize.FormattingEnabled = true;
+			cmbClockFontSize.Location = new Point(190, 111);
+			cmbClockFontSize.Name = "cmbClockFontSize";
+			cmbClockFontSize.Size = new Size(563, 23);
+			cmbClockFontSize.TabIndex = 16;
+			// 
 			// MainForm
 			// 
 			AutoScaleDimensions = new SizeF(7F, 15F);
@@ -839,5 +865,7 @@
 		private NumericUpDown nudNetworkDisplayDuration;
 		private Label lblNetworkDisplayDuration;
 		private NumericUpDown nudSystemDisplayDuration;
+		private Label lblClockFontSize;
+		private ComboBox cmbClockFontSize;
 	}
 }
