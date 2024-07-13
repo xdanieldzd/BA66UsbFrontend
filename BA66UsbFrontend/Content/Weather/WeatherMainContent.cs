@@ -25,7 +25,7 @@ namespace BA66UsbFrontend.Content.Weather
 					dataString2 = "\x1B[2;1H" + $"{weatherLocation}".PadRight(displaySize.Width)[..displaySize.Width];
 			}
 			else
-				dataString2 = "\x1B[2;1H" + " Current conditions ".PadRight(displaySize.Width)[..displaySize.Width];
+				dataString2 = "\x1B[2;1H" + "Current conditions:".PadRight(displaySize.Width)[..displaySize.Width];
 
 			var dataString3 = "\x1B[3;1H" + $"{weatherReport?.Temperature:0.0}{unitSuffix}, feels {weatherReport?.TempFeelsLike:0.0}{unitSuffix}".PadRight(displaySize.Width)[..displaySize.Width];
 
